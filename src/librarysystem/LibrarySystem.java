@@ -63,7 +63,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
     
     private void setPathToImage() {
     	String currDirectory = System.getProperty("user.dir");
-    	pathToImage = currDirectory+"\\src\\librarysystem\\library.jpg";
+    	pathToImage = currDirectory+"/src/librarysystem/library.jpg";
     }
     
     private void insertSplashImage() {
@@ -108,6 +108,14 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LibrarySystem.hideAllWindows();
+
+			if(SystemController.currentAuth == null) {
+				LoginWindow.INSTANCE.init();
+				Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
+				LoginWindow.INSTANCE.setVisible(true);
+				return;
+			}
+
 			AllBookIdsWindow.INSTANCE.init();
 			
 			List<String> ids = ci.allBookIds();
@@ -132,6 +140,14 @@ public class LibrarySystem extends JFrame implements LibWindow {
     	@Override
 		public void actionPerformed(ActionEvent e) {
 			LibrarySystem.hideAllWindows();
+
+			if(SystemController.currentAuth == null) {
+				LoginWindow.INSTANCE.init();
+				Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
+				LoginWindow.INSTANCE.setVisible(true);
+				return;
+			}
+
 			AllMemberIdsWindow.INSTANCE.init();
 			AllMemberIdsWindow.INSTANCE.pack();
 			AllMemberIdsWindow.INSTANCE.setVisible(true);
