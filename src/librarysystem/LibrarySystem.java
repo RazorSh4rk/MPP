@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import business.ControllerInterface;
 import business.SystemController;
+import dataaccess.Auth;
 
 
 public class LibrarySystem extends JFrame implements LibWindow {
@@ -87,11 +88,11 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		allBookIds.addActionListener(new AllBookIdsListener());
 		allMemberIds = new JMenuItem("All Member Ids");
 		allMemberIds.addActionListener(new AllMemberIdsListener());
+		test = new JMenuItem("Test");
+		test.addActionListener(new TestListener());
 		options.add(login);
 		options.add(allBookIds);
 		options.add(allMemberIds);
-		test = new JMenuItem("Test");
-		test.addActionListener(new TestListener());
 		options.add(test);
 	}
 
@@ -117,6 +118,9 @@ public class LibrarySystem extends JFrame implements LibWindow {
 				LoginWindow.INSTANCE.init();
 				Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
 				LoginWindow.INSTANCE.setVisible(true);
+				return;
+			} else if(SystemController.currentAuth == Auth.ADMIN) {
+				//TODO I will implement message here to the Main Window/LibrarySystem.
 				return;
 			}
 
@@ -145,10 +149,13 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		public void actionPerformed(ActionEvent e) {
 			LibrarySystem.hideAllWindows();
 
-			if(SystemController.currentAuth == null) {
+			if (SystemController.currentAuth == null) {
 				LoginWindow.INSTANCE.init();
 				Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
 				LoginWindow.INSTANCE.setVisible(true);
+				return;
+			} else if (SystemController.currentAuth == Auth.LIBRARIAN) {
+				//TODO I will implement message here to the Main Window/LibrarySystem.
 				return;
 			}
 
