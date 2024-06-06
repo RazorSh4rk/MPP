@@ -1,13 +1,31 @@
 package librarysystem;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import business.BookCopy;
+import business.CheckoutRecord;
+import business.LoginException;
+import business.Validation;
+import business.ValidationException;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessFacade;
+import dataaccess.User;
+
 import java.awt.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class LibraryCheckoutUI extends JPanel {
 
 	JLabel errorField = new JLabel("$");
+	CheckoutRecord cRec;
+	DefaultTableModel dtm = new DefaultTableModel(new Object[] {"Member ID", "ISBN", "Checkout", "Due"}, 0);
 	
     public LibraryCheckoutUI() {
         //super("Checkout");
@@ -32,7 +50,40 @@ public class LibraryCheckoutUI extends JPanel {
         	var memberID = mID.getText();
         	var isbn = ISBN.getText();
         	
-        	errorField.setText(memberID + " " + isbn);
+        	try {
+				Validation.isID(memberID);
+				Validation.isIsbn(isbn);
+			} catch (ValidationException e) {
+				errorField.setText(e.getMessage());
+				//return;
+			}
+        	
+        	DataAccess da = new DataAccessFacade();
+    		var mMap = da.readMemberMap();
+    		var bMap = da.readBooksMap();
+    		if(!mMap.containsKey(memberID)) {
+    			errorField.setText("User not found!");
+    			return;
+    		}
+    		if(!bMap.containsKey(isbn)) {
+    			errorField.setText("Book not found!");
+    			return;
+    		}
+    		
+    		var b = bMap.get(isbn);
+    		if(b.isAvailable()) {
+    			var a = b.getNextAvailableCopy();
+    			var now = LocalDate.now();
+    			var then = LocalDate.now().plusDays(30);
+    			cRec = new CheckoutRecord(now, then, a);
+    			b.updateCopies(a);
+    			var member = mMap.get(memberID);
+    			member.addCheckout(cRec);
+    			
+    			dtm.addRow(new Object[] {memberID, isbn, now.toString(), then.toString()});
+    		}
+    		
+        	
         });
         topPanel.add(okB);
 
@@ -43,7 +94,7 @@ public class LibraryCheckoutUI extends JPanel {
         // Table panel
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.add(new JLabel("Book:"), BorderLayout.NORTH);
-        JTable table = new JTable(5, 4); // Example table size
+        JTable table = new JTable(dtm);
         JScrollPane scrollPane = new JScrollPane(table);
         tablePanel.add(scrollPane, BorderLayout.CENTER);
 
