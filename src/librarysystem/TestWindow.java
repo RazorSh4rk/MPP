@@ -23,8 +23,14 @@ public class TestWindow extends JFrame implements LibWindow {
     private JPanel leftTextPanel;
     private JPanel rightTextPanel;
 
-    private JTextField isbn;
-    private JTextField name;
+    private JTextField memberNo;
+    private JTextField lastName;
+    private JTextField firstName;
+    private JTextField phoneNumber;
+    private JTextField state;
+    private JTextField city;
+    private JTextField zip;
+    private JTextField street;
     private JLabel label;
     private JButton submitButton;
 
@@ -59,9 +65,8 @@ public class TestWindow extends JFrame implements LibWindow {
         mainPanel.add(lowerHalf, BorderLayout.SOUTH);
         getContentPane().add(mainPanel);
         isInitialized(true);
-        pack();
-        //setSize(660, 500);
-
+        setSize(800, 200); // fixed frame size
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
     private void defineUpperHalf() {
@@ -99,7 +104,7 @@ public class TestWindow extends JFrame implements LibWindow {
         topPanel = new JPanel();
         JPanel intPanel = new JPanel(new BorderLayout());
         intPanel.add(Box.createRigidArea(new Dimension(0,20)), BorderLayout.NORTH);
-        JLabel loginLabel = new JLabel("Login");
+        JLabel loginLabel = new JLabel("Add New Member");
         Util.adjustLabelFont(loginLabel, Color.BLUE.darker(), true);
         intPanel.add(loginLabel, BorderLayout.CENTER);
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -107,16 +112,16 @@ public class TestWindow extends JFrame implements LibWindow {
 
     }
 
+private void defineMiddlePanel() {
+    middlePanel = new JPanel();
+    middlePanel.setLayout(new BorderLayout());
+    defineLeftTextPanel();
+    defineRightTextPanel();
+    middlePanel.add(leftTextPanel, BorderLayout.NORTH);
+    middlePanel.add(rightTextPanel, BorderLayout.SOUTH);
+}
 
 
-    private void defineMiddlePanel() {
-        middlePanel=new JPanel();
-        middlePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        defineLeftTextPanel();
-        defineRightTextPanel();
-        middlePanel.add(leftTextPanel);
-        middlePanel.add(rightTextPanel);
-    }
     private void defineLowerPanel() {
         lowerPanel = new JPanel();
         submitButton = new JButton("Submit");
@@ -124,42 +129,77 @@ public class TestWindow extends JFrame implements LibWindow {
         lowerPanel.add(submitButton);
     }
 
+
     private void defineLeftTextPanel() {
-
-        JPanel topText = new JPanel();
-        JPanel bottomText = new JPanel();
-        topText.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-        bottomText.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-
-        isbn = new JTextField(10);
-        label = new JLabel("ISBN");
-        label.setFont(Util.makeSmallFont(label.getFont()));
-        topText.add(isbn);
-        bottomText.add(label);
-
         leftTextPanel = new JPanel();
-        leftTextPanel.setLayout(new BorderLayout());
-        leftTextPanel.add(topText,BorderLayout.NORTH);
-        leftTextPanel.add(bottomText,BorderLayout.CENTER);
+        leftTextPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+
+        JPanel leftLine = new JPanel();
+        leftLine.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+
+        memberNo = new JTextField(10);
+        JLabel memberNoLabel = new JLabel("Member No");
+        memberNoLabel.setFont(Util.makeSmallFont(memberNoLabel.getFont()));
+        leftLine.add(memberNoLabel);
+        leftLine.add(memberNo);
+
+        firstName = new JTextField(10);
+        JLabel firstNameLabel = new JLabel("First Name");
+        firstNameLabel.setFont(Util.makeSmallFont(firstNameLabel.getFont()));
+        leftLine.add(firstNameLabel);
+        leftLine.add(firstName);
+
+        lastName = new JTextField(10);
+        JLabel lastNameLabel = new JLabel("Last Name");
+        lastNameLabel.setFont(Util.makeSmallFont(lastNameLabel.getFont()));
+        leftLine.add(lastNameLabel);
+        leftLine.add(lastName);
+
+        phoneNumber = new JTextField(10);
+        JLabel phoneNumberLabel = new JLabel("Phone Number");
+        phoneNumberLabel.setFont(Util.makeSmallFont(phoneNumberLabel.getFont()));
+        leftLine.add(phoneNumberLabel);
+        leftLine.add(phoneNumber);
+
+        leftTextPanel.add(leftLine);
     }
+
     private void defineRightTextPanel() {
-
-        JPanel topText = new JPanel();
-        JPanel bottomText = new JPanel();
-        topText.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-        bottomText.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-
-        name = new JTextField(10);
-        label = new JLabel("Name");
-        label.setFont(Util.makeSmallFont(label.getFont()));
-        topText.add(name);
-        bottomText.add(label);
-
         rightTextPanel = new JPanel();
-        rightTextPanel.setLayout(new BorderLayout());
-        rightTextPanel.add(topText,BorderLayout.NORTH);
-        rightTextPanel.add(bottomText,BorderLayout.CENTER);
+        rightTextPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+
+        JPanel rightLine = new JPanel();
+        rightLine.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+
+        state = new JTextField(10);
+        JLabel stateLabel = new JLabel("State");
+        stateLabel.setFont(Util.makeSmallFont(stateLabel.getFont()));
+        rightLine.add(stateLabel);
+        rightLine.add(state);
+
+        city = new JTextField(10);
+        JLabel cityLabel = new JLabel("City");
+        cityLabel.setFont(Util.makeSmallFont(cityLabel.getFont()));
+        rightLine.add(cityLabel);
+        rightLine.add(city);
+
+        street = new JTextField(10);
+        JLabel streetLabel = new JLabel("Street");
+        streetLabel.setFont(Util.makeSmallFont(streetLabel.getFont()));
+        rightLine.add(streetLabel);
+        rightLine.add(street);
+
+        zip = new JTextField(10);
+        JLabel zipLabel = new JLabel("Zip");
+        zipLabel.setFont(Util.makeSmallFont(zipLabel.getFont()));
+        rightLine.add(zipLabel);
+        rightLine.add(zip);
+
+        rightTextPanel.add(rightLine);
     }
+
+
+
 
     private void addBackButtonListener(JButton butn) {
         butn.addActionListener(evt -> {
@@ -171,14 +211,24 @@ public class TestWindow extends JFrame implements LibWindow {
     private void addSubmitButtonListener(JButton butn) {
         butn.addActionListener(evt -> {
 
-            System.out.println(isbn.getText() + " " + name.getText());
-//            try {
-//                SystemController sc = new SystemController();
-//                sc.login(isbn.getText(), name.getText());
-//            } catch(LoginException le) {
-//                JOptionPane.showMessageDialog(this, le.getMessage());
-//            }
-        });
+           if(!(memberNo.getText().isEmpty() ||
+                   lastName.getText().isEmpty() ||
+                   firstName.getText().isEmpty() ||
+                   state.getText().isEmpty() ||
+                   street.getText().isEmpty() ||
+                   zip.getText().isEmpty() ||
+                   phoneNumber.getText().isEmpty() ||
+                   city.getText().isEmpty()))
+            {
+            try {
+                SystemController sc = new SystemController();
+                sc.addMember(memberNo.getText(), firstName.getText(), lastName.getText(), phoneNumber.getText(), state.getText(), city.getText(), street.getText(), zip.getText());
+                JOptionPane.showMessageDialog(TestWindow.this, "Member id added");
+            } catch(Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            }
+            } else JOptionPane.showMessageDialog(TestWindow.this, "Enter all credentials");
+});
     }
 
 
