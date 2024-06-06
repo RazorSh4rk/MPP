@@ -9,14 +9,8 @@ public class Validation {
     }
 
     public static void isIsbn(String isbn) throws ValidationException {
-        if(!isbn.matches("^\\d{10}$") && !isbn.matches("^\\d{13}$")) {
-            throw new ValidationException("ISBN must be numeric and consist of either 10 or 13 characters!");
-        }
-        if(isbn.length() == 10 && !isbn.matches("^([01])\\d{9}$")) {
-            throw new ValidationException("If ISBN has length 10, the first digit must be 0 or 1!");
-        }
-        if(isbn.length() == 13 && !isbn.matches("^(978|979)\\d{10}$")) {
-            throw new ValidationException("If ISBN has length 13, the first 3 digits must be either 978 or 979!");
+        if(!isbn.matches("\\d{2}-\\d{5}")) {
+            throw new ValidationException("ISBN must match this format 21-11451");
         }
     }
 
@@ -27,7 +21,7 @@ public class Validation {
     }
 
     public static void isTelephone(String tel) throws ValidationException {
-        if (!tel.matches("^\\d{10}$")) {
+        if (!tel.matches("\\d{3}-\\d{3}-\\d{4}")) {
             throw new ValidationException("Tel Number must be numeric and consist of 5 characters!");
         }
     }
