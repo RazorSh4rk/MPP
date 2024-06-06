@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import business.ControllerInterface;
 import business.SystemController;
+import dataaccess.Auth;
 
 
 public class LibrarySystem extends JFrame implements LibWindow {
@@ -25,7 +26,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
 	JPanel mainPanel;
 	JMenuBar menuBar;
     JMenu options;
-    JMenuItem login, allBookIds, allMemberIds; 
+    JMenuItem login, allBookIds, allMemberIds, test;
     String pathToImage;
     private boolean isInitialized = false;
     
@@ -33,7 +34,8 @@ public class LibrarySystem extends JFrame implements LibWindow {
     	LibrarySystem.INSTANCE,
 		LoginWindow.INSTANCE,
 		AllMemberIdsWindow.INSTANCE,	
-		AllBookIdsWindow.INSTANCE
+		AllBookIdsWindow.INSTANCE,
+		TestWindow.INSTANCE,
 	};
     	
 	public static void hideAllWindows() {		
@@ -63,7 +65,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
     
     private void setPathToImage() {
     	String currDirectory = System.getProperty("user.dir");
-    	pathToImage = currDirectory+"\\src\\librarysystem\\library.jpg";
+    	pathToImage = currDirectory+"/src/librarysystem/library.jpg";
     }
     
     private void insertSplashImage() {
@@ -76,21 +78,24 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		addMenuItems();
 		setJMenuBar(menuBar);		
     }
-    
-    private void addMenuItems() {
-       options = new JMenu("Options");  
- 	   menuBar.add(options);
- 	   login = new JMenuItem("Login");
- 	   login.addActionListener(new LoginListener());
- 	   allBookIds = new JMenuItem("All Book Ids");
- 	   allBookIds.addActionListener(new AllBookIdsListener());
- 	   allMemberIds = new JMenuItem("All Member Ids");
- 	   allMemberIds.addActionListener(new AllMemberIdsListener());
- 	   options.add(login);
- 	   options.add(allBookIds);
- 	   options.add(allMemberIds);
-    }
-    
+
+	private void addMenuItems() {
+		options = new JMenu("Options");
+		menuBar.add(options);
+		login = new JMenuItem("Login");
+		login.addActionListener(new LoginListener());
+		allBookIds = new JMenuItem("All Book Ids");
+		allBookIds.addActionListener(new AllBookIdsListener());
+		allMemberIds = new JMenuItem("All Member Ids");
+		allMemberIds.addActionListener(new AllMemberIdsListener());
+		test = new JMenuItem("Test");
+		test.addActionListener(new TestListener());
+		options.add(login);
+		options.add(allBookIds);
+		options.add(allMemberIds);
+		options.add(test);
+	}
+
     class LoginListener implements ActionListener {
 
 		@Override
@@ -99,15 +104,26 @@ public class LibrarySystem extends JFrame implements LibWindow {
 			LoginWindow.INSTANCE.init();
 			Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
 			LoginWindow.INSTANCE.setVisible(true);
-			
+
 		}
-    	
+
     }
     class AllBookIdsListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LibrarySystem.hideAllWindows();
+
+			if(SystemController.currentAuth == null) {
+				LoginWindow.INSTANCE.init();
+				Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
+				LoginWindow.INSTANCE.setVisible(true);
+				return;
+			} else if(SystemController.currentAuth == Auth.ADMIN) {
+				//TODO I will implement message here to the Main Window/LibrarySystem.
+				return;
+			}
+
 			AllBookIdsWindow.INSTANCE.init();
 			
 			List<String> ids = ci.allBookIds();
@@ -132,6 +148,17 @@ public class LibrarySystem extends JFrame implements LibWindow {
     	@Override
 		public void actionPerformed(ActionEvent e) {
 			LibrarySystem.hideAllWindows();
+
+			if (SystemController.currentAuth == null) {
+				LoginWindow.INSTANCE.init();
+				Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
+				LoginWindow.INSTANCE.setVisible(true);
+				return;
+			} else if (SystemController.currentAuth == Auth.LIBRARIAN) {
+				//TODO I will implement message here to the Main Window/LibrarySystem.
+				return;
+			}
+
 			AllMemberIdsWindow.INSTANCE.init();
 			AllMemberIdsWindow.INSTANCE.pack();
 			AllMemberIdsWindow.INSTANCE.setVisible(true);
@@ -157,6 +184,19 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		}
     	
     }
+
+	class TestListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LibrarySystem.hideAllWindows();
+			TestWindow.INSTANCE.init();
+			Util.centerFrameOnDesktop(TestWindow.INSTANCE);
+			TestWindow.INSTANCE.setVisible(true);
+
+		}
+
+	}
 
 	@Override
 	public boolean isInitialized() {
