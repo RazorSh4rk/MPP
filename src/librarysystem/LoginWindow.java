@@ -30,8 +30,6 @@ public class LoginWindow extends JFrame implements LibWindow {
 	private JPanel mainPanel;
 	private JPanel upperHalf;
 	private JPanel middleHalf;
-	private JPanel lowerHalf;
-	private JPanel container;
 	
 	private JPanel topPanel;
 	private JPanel middlePanel;
@@ -43,7 +41,6 @@ public class LoginWindow extends JFrame implements LibWindow {
 	private JTextField password;
 	private JLabel label;
 	private JButton loginButton;
-	private JButton logoutButton;
 	
 	
 	
@@ -66,14 +63,12 @@ public class LoginWindow extends JFrame implements LibWindow {
     		mainPanel = new JPanel();
     		defineUpperHalf();
     		defineMiddleHalf();
-    		defineLowerHalf();
     		BorderLayout bl = new BorderLayout();
     		bl.setVgap(30);
     		mainPanel.setLayout(bl);
     					
     		mainPanel.add(upperHalf, BorderLayout.NORTH);
     		mainPanel.add(middleHalf, BorderLayout.CENTER);
-    		mainPanel.add(lowerHalf, BorderLayout.SOUTH);
     		getContentPane().add(mainPanel);
     		isInitialized(true);
     		pack();
@@ -100,16 +95,6 @@ public class LoginWindow extends JFrame implements LibWindow {
     		s.setOrientation(SwingConstants.HORIZONTAL);
     		//middleHalf.add(Box.createRigidArea(new Dimension(0,50)));
     		middleHalf.add(s, BorderLayout.SOUTH);
-    		
-    	}
-    	private void defineLowerHalf() {
-
-    		lowerHalf = new JPanel();
-    		lowerHalf.setLayout(new FlowLayout(FlowLayout.LEFT));
-    		
-    		JButton backButton = new JButton("<= Back to Main");
-    		addBackButtonListener(backButton);
-    		lowerHalf.add(backButton);
     		
     	}
     	private void defineTopPanel() {
@@ -178,19 +163,11 @@ public class LoginWindow extends JFrame implements LibWindow {
     		rightTextPanel.add(bottomText,BorderLayout.CENTER);
     	}
     	
-    	private void addBackButtonListener(JButton butn) {
-    		butn.addActionListener(evt -> {
-    			LibrarySystem.hideAllWindows();
-    			LibrarySystem.INSTANCE.setVisible(true);
-    		});
-    	}
-    	
     	private void addLoginButtonListener(JButton butn) {
     		butn.addActionListener(evt -> {
 				try {
 					SystemController sc = new SystemController();
 					sc.login(username.getText(), password.getText());
-					JOptionPane.showMessageDialog(this,"Successful Login");
 					setVisible(false);
 					new MainWindow(SystemController.currentAuth.toString());
 				} catch(LoginException le) {

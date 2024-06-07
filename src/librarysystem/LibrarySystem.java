@@ -35,7 +35,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		LoginWindow.INSTANCE,
 		AllMemberIdsWindow.INSTANCE,	
 		AllBookIdsWindow.INSTANCE,
-		TestWindow.INSTANCE,
+		//TestWindow.INSTANCE,
 	};
     	
 	public static void hideAllWindows() {		
@@ -88,12 +88,12 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		allBookIds.addActionListener(new AllBookIdsListener());
 		allMemberIds = new JMenuItem("All Member Ids");
 		allMemberIds.addActionListener(new AllMemberIdsListener());
-		test = new JMenuItem("Test");
-		test.addActionListener(new TestListener());
+		//test = new JMenuItem("Test");
+		//test.addActionListener(new TestListener());
 		options.add(login);
 		options.add(allBookIds);
 		options.add(allMemberIds);
-		options.add(test);
+		//options.add(test);
 	}
 
     class LoginListener implements ActionListener {
@@ -185,18 +185,18 @@ public class LibrarySystem extends JFrame implements LibWindow {
     	
     }
 
-	class TestListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			LibrarySystem.hideAllWindows();
-			TestWindow.INSTANCE.init();
-			Util.centerFrameOnDesktop(TestWindow.INSTANCE);
-			TestWindow.INSTANCE.setVisible(true);
-
-		}
-
-	}
+//	class TestListener implements ActionListener {
+//
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//			LibrarySystem.hideAllWindows();
+//			TestWindow.INSTANCE.init();
+//			Util.centerFrameOnDesktop(TestWindow.INSTANCE);
+//			TestWindow.INSTANCE.setVisible(true);
+//
+//		}
+//
+//	}
 
 	@Override
 	public boolean isInitialized() {
