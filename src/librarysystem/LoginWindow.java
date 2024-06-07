@@ -168,7 +168,6 @@ public class LoginWindow extends JFrame implements LibWindow {
 				try {
 					SystemController sc = new SystemController();
 					sc.login(username.getText(), password.getText());
-					JOptionPane.showMessageDialog(this,"Successful Login");
 					setVisible(false);
 					new MainWindow(SystemController.currentAuth.toString());
 				} catch(LoginException le) {
