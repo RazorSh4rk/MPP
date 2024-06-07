@@ -26,27 +26,24 @@ public class MainWindow extends JFrame {
         setResizable(false);
         
         var menuItems = new ArrayList<String>();
-        if(SystemController.currentAuth == null) {
-            openLoginWindow();
-            return;
-        } else if(SystemController.currentAuth == Auth.ADMIN) {
+        if(SystemController.currentAuth == Auth.ADMIN) {
         	menuItems.add("Add new book");
         	menuItems.add("Add new member");
         	menuItems.add("Add copy of a book");
-        	menuItems.add("Exit");
         } else if(SystemController.currentAuth == Auth.LIBRARIAN) {
         	menuItems.add("Check out book");
         	menuItems.add("Get user record");
-        	menuItems.add("Exit");
         } else if(SystemController.currentAuth == Auth.BOTH){
         	menuItems.add("Add new book");
-        	menuItems.add("Add New Member");
+        	menuItems.add("Add new member");
         	menuItems.add("Add copy of a book");
         	menuItems.add("Check out book");
         	menuItems.add("Get user record");
-        	menuItems.add("Exit");
         }
-        String[] m = menuItems.toArray(new String[menuItems.size()]);
+        menuItems.add("Get books");
+        menuItems.add("Exit");
+
+        String[] m = menuItems.toArray(new String[0]);
         var links = new JList<String>(m);     
         var cards = new JPanel(new CardLayout());
         
@@ -54,12 +51,13 @@ public class MainWindow extends JFrame {
         cards.add(checkout, "Check out book");
 
         var newMember= new TestWindow();
-        cards.add(newMember, "Add New Member");
+        cards.add(newMember, "Add new member");
 
-        var jp = new JPanel();
-        var jl = new JLabel("new");
-        jp.add(jl);
-        cards.add(jp, "Add new member");
+        var allMembers = new AllMembers();
+        cards.add(allMembers.getMainPanel(), "Get user record");
+
+        var allBooks = new AllBooks();
+        cards.add(allBooks.getMainPanel(), "Get books");
         
         links.addListSelectionListener(evt -> {
         	var selected = links.getSelectedValue().toString();
@@ -79,11 +77,4 @@ public class MainWindow extends JFrame {
         Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
         login.setVisible(true);
 	}
-
-    private void openLoginWindow() {
-        login.init();
-        Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
-        login.setVisible(true);
-        setVisible(false);
-    }
 }
