@@ -53,6 +53,9 @@ public class MainWindow extends JFrame {
         var checkout = new LibraryCheckoutUI();
         cards.add(checkout, "Check out book");
         
+        var copy = new DuplicateBookUI();
+        cards.add(copy, "Add copy of a book");
+        
         var jp = new JPanel();
         var jl = new JLabel("new");
         jp.add(jl);
