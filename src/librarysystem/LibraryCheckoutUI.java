@@ -24,7 +24,7 @@ import java.awt.*;
 public class LibraryCheckoutUI extends JPanel {
 
 	JLabel errorField = new JLabel("$");
-	CheckoutRecord cRec;
+	CheckoutRecord cRecord;
 	DefaultTableModel dtm = new DefaultTableModel(new Object[] {"Member ID", "ISBN", "Checkout", "Due"}, 0);
 	
     public LibraryCheckoutUI() {
@@ -55,7 +55,7 @@ public class LibraryCheckoutUI extends JPanel {
 				Validation.isIsbn(isbn);
 			} catch (ValidationException e) {
 				errorField.setText(e.getMessage());
-				//return;
+				return;
 			}
         	
         	DataAccess da = new DataAccessFacade();
@@ -74,13 +74,16 @@ public class LibraryCheckoutUI extends JPanel {
     		if(b.isAvailable()) {
     			var a = b.getNextAvailableCopy();
     			var now = LocalDate.now();
-    			var then = LocalDate.now().plusDays(30);
-    			cRec = new CheckoutRecord(now, then, a);
+    			var then = LocalDate.now().plusDays(b.getMaxCheckoutLength());
+    			cRecord = new CheckoutRecord(now, then, a);
     			b.updateCopies(a);
     			var member = mMap.get(memberID);
-    			member.addCheckout(cRec);
-    			
+    			member.addCheckout(cRecord);
+    			da.saveNewMember(member);
+    			da.saveNewBook(b);
     			dtm.addRow(new Object[] {memberID, isbn, now.toString(), then.toString()});
+    		} else {
+    			errorField.setText("No more books available!");
     		}
     		
         	
