@@ -58,7 +58,7 @@ public class LibraryCheckoutUI extends JPanel {
 				return;
 			}
         	
-        	var da = new DataAccessFacade();
+        	DataAccess da = new DataAccessFacade();
     		var mMap = da.readMemberMap();
     		var bMap = da.readBooksMap();
     		if(!mMap.containsKey(memberID)) {
