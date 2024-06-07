@@ -1,7 +1,11 @@
 package librarysystem;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
+import business.SystemController;
+import dataaccess.Auth;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -11,9 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 public class MainWindow extends JFrame {
-	// admin
-	// librarian
-	// both
+	private static final LibWindow login = LoginWindow.INSTANCE;
+
 	public MainWindow(String accessRight) {
 		super("Leabharlann - [" + accessRight + "]");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,22 +26,25 @@ public class MainWindow extends JFrame {
         setResizable(false);
         
         var menuItems = new ArrayList<String>();
-        if(accessRight.equals("admin")) {
+        if(SystemController.currentAuth == null) {
+            openLoginWindow();
+            return;
+        } else if(SystemController.currentAuth == Auth.ADMIN) {
         	menuItems.add("Add new book");
         	menuItems.add("Add new member");
         	menuItems.add("Add copy of a book");
-        	menuItems.add("exit");
-        } else if(accessRight.equals("librarian")) {
+        	menuItems.add("Exit");
+        } else if(SystemController.currentAuth == Auth.LIBRARIAN) {
         	menuItems.add("Check out book");
         	menuItems.add("Get user record");
-        	menuItems.add("exit");
-        } else if(accessRight.equals("superuser")){
+        	menuItems.add("Exit");
+        } else if(SystemController.currentAuth == Auth.BOTH){
         	menuItems.add("Add new book");
         	menuItems.add("Add new member");
         	menuItems.add("Add copy of a book");
         	menuItems.add("Check out book");
         	menuItems.add("Get user record");
-        	menuItems.add("exit");
+        	menuItems.add("Exit");
         }
         String[] m = menuItems.toArray(new String[menuItems.size()]);
         var links = new JList<String>(m);     
@@ -66,6 +72,15 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new MainWindow("superuser");
+        login.init();
+        Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
+        login.setVisible(true);
 	}
+
+    private void openLoginWindow() {
+        login.init();
+        Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
+        login.setVisible(true);
+        setVisible(false);
+    }
 }
