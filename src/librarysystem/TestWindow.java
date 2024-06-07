@@ -1,12 +1,15 @@
 package librarysystem;
 
 import business.ControllerInterface;
+import business.LibraryMember;
 import business.LoginException;
 import business.SystemController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 
@@ -44,10 +47,13 @@ public class TestWindow extends JPanel {
     public boolean isInitialized() {
         return isInitialized;
     }
+
     public void isInitialized(boolean val) {
         isInitialized = val;
     }
+
     private JTextField messageBar = new JTextField();
+
     public void clear() {
         messageBar.setText("");
     }
@@ -55,6 +61,7 @@ public class TestWindow extends JPanel {
     /* This class is a singleton */
     public TestWindow() {
         mainPanel = new JPanel();
+        mainPanel.setSize(480, 640);
         defineUpperHalf();
         defineMiddleHalf();
         defineLowerHalf();
@@ -70,6 +77,7 @@ public class TestWindow extends JPanel {
 
         setSize(800, 200); // fixed frame size
     }
+
     private void defineUpperHalf() {
 
         upperHalf = new JPanel();
@@ -82,6 +90,7 @@ public class TestWindow extends JPanel {
         upperHalf.add(lowerPanel, BorderLayout.SOUTH);
 
     }
+
     private void defineMiddleHalf() {
         middleHalf = new JPanel();
         middleHalf.setLayout(new BorderLayout());
@@ -91,18 +100,34 @@ public class TestWindow extends JPanel {
 
     }
 
-
     private void defineLowerHalf() {
         lowerHalf = new JPanel();
         lowerHalf.setLayout(new BorderLayout());
 
         String[] columnNames = {"Member ID"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-        JTable table = new JTable(tableModel);
+        JTable table = new JTable(tableModel) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // This causes the table not to be editable
+            }
+        };
         table.setPreferredScrollableViewportSize(new Dimension(500, 300));
         table.setFillsViewportHeight(true);
         JButton refreshButton = new JButton("Refresh");
         refreshButton.setPreferredSize(new Dimension(20, 20));
+
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // double-click
+                    int row = table.getSelectedRow();
+                    int col = table.getSelectedColumn();
+                    String memberId = (String) table.getValueAt(row, col);
+                    showMemberDetails(memberId);
+                }
+            }
+        });
 
         JScrollPane tableScrollPane = new JScrollPane(table);
         lowerHalf.add(tableScrollPane, BorderLayout.CENTER);
@@ -110,7 +135,6 @@ public class TestWindow extends JPanel {
         refreshButton.addActionListener(e -> updateTable(tableModel));
         updateTable(tableModel);
     }
-
     private void updateTable(DefaultTableModel tableModel) {
         tableModel.setRowCount(0);
         Collection<String> memberIds = ci.allMemberIds();
@@ -119,10 +143,11 @@ public class TestWindow extends JPanel {
         }
         tableModel.fireTableDataChanged();
     }
+
     private void defineTopPanel() {
         topPanel = new JPanel();
         JPanel intPanel = new JPanel(new BorderLayout());
-        intPanel.add(Box.createRigidArea(new Dimension(0,20)), BorderLayout.NORTH);
+        intPanel.add(Box.createRigidArea(new Dimension(0, 20)), BorderLayout.NORTH);
         JLabel loginLabel = new JLabel("Add New Member");
         Util.adjustLabelFont(loginLabel, Color.BLUE.darker(), true);
         intPanel.add(loginLabel, BorderLayout.CENTER);
@@ -133,7 +158,7 @@ public class TestWindow extends JPanel {
 
     private void defineMiddlePanel() {
         middlePanel = new JPanel();
-        middlePanel.setLayout(new GridLayout(1, 2)); // Use GridLayout to arrange left and right panels
+        middlePanel.setLayout(new GridLayout(1, 2));
 
         defineLeftTextPanel();
         defineRightTextPanel();
@@ -152,7 +177,7 @@ public class TestWindow extends JPanel {
 
     private void defineLeftTextPanel() {
         leftTextPanel = new JPanel();
-        leftTextPanel.setLayout(new GridLayout(4, 2)); // Use GridLayout to arrange labels and text fields
+        leftTextPanel.setLayout(new GridLayout(4, 2));
 
         memberNo = new JTextField(10);
         JLabel memberNoLabel = new JLabel("Member No");
@@ -181,7 +206,7 @@ public class TestWindow extends JPanel {
 
     private void defineRightTextPanel() {
         rightTextPanel = new JPanel();
-        rightTextPanel.setLayout(new GridLayout(4, 2)); // Use GridLayout to arrange labels and text fields
+        rightTextPanel.setLayout(new GridLayout(4, 2));
 
         state = new JTextField(10);
         JLabel stateLabel = new JLabel("State");
@@ -212,26 +237,47 @@ public class TestWindow extends JPanel {
     private void addSubmitButtonListener(JButton butn) {
         butn.addActionListener(evt -> {
 
-           if(!(memberNo.getText().isEmpty() ||
-                   lastName.getText().isEmpty() ||
-                   firstName.getText().isEmpty() ||
-                   state.getText().isEmpty() ||
-                   street.getText().isEmpty() ||
-                   zip.getText().isEmpty() ||
-                   phoneNumber.getText().isEmpty() ||
-                   city.getText().isEmpty()))
-            {
-            try {
-                SystemController sc = new SystemController();
-                sc.addMember(memberNo.getText(), firstName.getText(), lastName.getText(), phoneNumber.getText(), state.getText(), city.getText(), street.getText(), zip.getText());
-                JOptionPane.showMessageDialog(TestWindow.this, "Member id added");
-            } catch(Exception e) {
-                JOptionPane.showMessageDialog(this, e.getMessage());
-            }
+            if (!(memberNo.getText().isEmpty() ||
+                    lastName.getText().isEmpty() ||
+                    firstName.getText().isEmpty() ||
+                    state.getText().isEmpty() ||
+                    street.getText().isEmpty() ||
+                    zip.getText().isEmpty() ||
+                    phoneNumber.getText().isEmpty() ||
+                    city.getText().isEmpty())) {
+                try {
+                    SystemController sc = new SystemController();
+                    sc.addMember(memberNo.getText(), firstName.getText(), lastName.getText(), phoneNumber.getText(), state.getText(), city.getText(), street.getText(), zip.getText());
+                    JOptionPane.showMessageDialog(TestWindow.this, "Member id added");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                }
             } else JOptionPane.showMessageDialog(TestWindow.this, "Enter all credentials");
-});
+        });
     }
 
+    private void showMemberDetails(String memberId) {
+        LibraryMember member = ci.getMember(memberId);
+        JPanel detailPanel = new JPanel();
+        detailPanel.setSize(300,250);
+        detailPanel.setLayout(new BorderLayout());
+        JTextArea detailArea = new JTextArea();
+        detailArea.setEditable(false);
+        detailArea.append("Member ID: " + member.getMemberId() + "\n");
+        detailArea.append("First Name: " + member.getFirstName() + "\n");
+        detailArea.append("Last Name: " + member.getLastName() + "\n");
+        detailArea.append("Phone Number: " + member.getTelephone() + "\n");
+        detailArea.append("State: " + member.getAddress() + "\n");
 
+        detailPanel.add(new JScrollPane(detailArea), BorderLayout.CENTER);
 
+        JDialog dialog = new JDialog();
+        dialog.setModal(true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setTitle("Member Details");
+        dialog.getContentPane().add(detailPanel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+    }
 }
