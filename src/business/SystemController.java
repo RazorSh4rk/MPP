@@ -11,7 +11,22 @@ import dataaccess.User;
 
 public class SystemController implements ControllerInterface {
 	public static Auth currentAuth = null;
-	
+	private DataAccess dataAccess = new DataAccessFacade();
+	public void addMember(String memberNo, String firstName, String lastName, String phoneNumber,
+						  String state, String city, String street, String zip) {
+
+		Address address = addAddress(state, city, street, zip);
+		LibraryMember libraryMember = new LibraryMember(memberNo, firstName, lastName, phoneNumber, address);
+
+
+		dataAccess.saveNewMember(libraryMember);
+	}
+
+	private Address addAddress(String state, String city, String street, String zip) {
+		return new Address(state, city, street, zip);
+	}
+
+
 	public void login(String id, String password) throws LoginException {
 		DataAccess da = new DataAccessFacade();
 		HashMap<String, User> map = da.readUserMap();
