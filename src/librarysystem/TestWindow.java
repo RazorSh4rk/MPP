@@ -1,12 +1,16 @@
 package librarysystem;
 
+import business.ControllerInterface;
 import business.LoginException;
 import business.SystemController;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Collection;
 
-public class TestWindow extends JFrame implements LibWindow {
+
+public class TestWindow extends JPanel {
     public static final TestWindow INSTANCE = new TestWindow();
 
     private boolean isInitialized = false;
@@ -35,7 +39,7 @@ public class TestWindow extends JFrame implements LibWindow {
     private JButton submitButton;
 
 
-
+    ControllerInterface ci = new SystemController();
 
     public boolean isInitialized() {
         return isInitialized;
@@ -49,9 +53,7 @@ public class TestWindow extends JFrame implements LibWindow {
     }
 
     /* This class is a singleton */
-    private TestWindow () {}
-
-    public void init() {
+    public TestWindow() {
         mainPanel = new JPanel();
         defineUpperHalf();
         defineMiddleHalf();
@@ -63,11 +65,10 @@ public class TestWindow extends JFrame implements LibWindow {
         mainPanel.add(upperHalf, BorderLayout.NORTH);
         mainPanel.add(middleHalf, BorderLayout.CENTER);
         mainPanel.add(lowerHalf, BorderLayout.SOUTH);
-        getContentPane().add(mainPanel);
-        isInitialized(true);
-        setSize(800, 200); // fixed frame size
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        add(mainPanel); // Add the main panel to the TestWindow panel
+
+        setSize(800, 200); // fixed frame size
     }
     private void defineUpperHalf() {
 
@@ -86,19 +87,37 @@ public class TestWindow extends JFrame implements LibWindow {
         middleHalf.setLayout(new BorderLayout());
         JSeparator s = new JSeparator();
         s.setOrientation(SwingConstants.HORIZONTAL);
-        //middleHalf.add(Box.createRigidArea(new Dimension(0,50)));
         middleHalf.add(s, BorderLayout.SOUTH);
 
     }
+
+
     private void defineLowerHalf() {
-
         lowerHalf = new JPanel();
-        lowerHalf.setLayout(new FlowLayout(FlowLayout.LEFT));
+        lowerHalf.setLayout(new BorderLayout());
 
-        JButton backButton = new JButton("<= Back to Main");
-        addBackButtonListener(backButton);
-        lowerHalf.add(backButton);
+        String[] columnNames = {"Member ID"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        JTable table = new JTable(tableModel);
+        table.setPreferredScrollableViewportSize(new Dimension(500, 300));
+        table.setFillsViewportHeight(true);
+        JButton refreshButton = new JButton("Refresh");
+        refreshButton.setPreferredSize(new Dimension(20, 20));
 
+        JScrollPane tableScrollPane = new JScrollPane(table);
+        lowerHalf.add(tableScrollPane, BorderLayout.CENTER);
+        lowerHalf.add(refreshButton, BorderLayout.NORTH);
+        refreshButton.addActionListener(e -> updateTable(tableModel));
+        updateTable(tableModel);
+    }
+
+    private void updateTable(DefaultTableModel tableModel) {
+        tableModel.setRowCount(0);
+        Collection<String> memberIds = ci.allMemberIds();
+        for (String memberId : memberIds) {
+            tableModel.addRow(new Object[]{memberId});
+        }
+        tableModel.fireTableDataChanged();
     }
     private void defineTopPanel() {
         topPanel = new JPanel();
@@ -112,14 +131,16 @@ public class TestWindow extends JFrame implements LibWindow {
 
     }
 
-private void defineMiddlePanel() {
-    middlePanel = new JPanel();
-    middlePanel.setLayout(new BorderLayout());
-    defineLeftTextPanel();
-    defineRightTextPanel();
-    middlePanel.add(leftTextPanel, BorderLayout.NORTH);
-    middlePanel.add(rightTextPanel, BorderLayout.SOUTH);
-}
+    private void defineMiddlePanel() {
+        middlePanel = new JPanel();
+        middlePanel.setLayout(new GridLayout(1, 2)); // Use GridLayout to arrange left and right panels
+
+        defineLeftTextPanel();
+        defineRightTextPanel();
+
+        middlePanel.add(leftTextPanel);
+        middlePanel.add(rightTextPanel);
+    }
 
 
     private void defineLowerPanel() {
@@ -129,84 +150,64 @@ private void defineMiddlePanel() {
         lowerPanel.add(submitButton);
     }
 
-
     private void defineLeftTextPanel() {
         leftTextPanel = new JPanel();
-        leftTextPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-
-        JPanel leftLine = new JPanel();
-        leftLine.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        leftTextPanel.setLayout(new GridLayout(4, 2)); // Use GridLayout to arrange labels and text fields
 
         memberNo = new JTextField(10);
         JLabel memberNoLabel = new JLabel("Member No");
         memberNoLabel.setFont(Util.makeSmallFont(memberNoLabel.getFont()));
-        leftLine.add(memberNoLabel);
-        leftLine.add(memberNo);
+        leftTextPanel.add(memberNoLabel);
+        leftTextPanel.add(memberNo);
 
         firstName = new JTextField(10);
         JLabel firstNameLabel = new JLabel("First Name");
         firstNameLabel.setFont(Util.makeSmallFont(firstNameLabel.getFont()));
-        leftLine.add(firstNameLabel);
-        leftLine.add(firstName);
+        leftTextPanel.add(firstNameLabel);
+        leftTextPanel.add(firstName);
 
         lastName = new JTextField(10);
         JLabel lastNameLabel = new JLabel("Last Name");
         lastNameLabel.setFont(Util.makeSmallFont(lastNameLabel.getFont()));
-        leftLine.add(lastNameLabel);
-        leftLine.add(lastName);
+        leftTextPanel.add(lastNameLabel);
+        leftTextPanel.add(lastName);
 
         phoneNumber = new JTextField(10);
         JLabel phoneNumberLabel = new JLabel("Phone Number");
         phoneNumberLabel.setFont(Util.makeSmallFont(phoneNumberLabel.getFont()));
-        leftLine.add(phoneNumberLabel);
-        leftLine.add(phoneNumber);
-
-        leftTextPanel.add(leftLine);
+        leftTextPanel.add(phoneNumberLabel);
+        leftTextPanel.add(phoneNumber);
     }
 
     private void defineRightTextPanel() {
         rightTextPanel = new JPanel();
-        rightTextPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-
-        JPanel rightLine = new JPanel();
-        rightLine.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        rightTextPanel.setLayout(new GridLayout(4, 2)); // Use GridLayout to arrange labels and text fields
 
         state = new JTextField(10);
         JLabel stateLabel = new JLabel("State");
         stateLabel.setFont(Util.makeSmallFont(stateLabel.getFont()));
-        rightLine.add(stateLabel);
-        rightLine.add(state);
+        rightTextPanel.add(stateLabel);
+        rightTextPanel.add(state);
 
         city = new JTextField(10);
         JLabel cityLabel = new JLabel("City");
         cityLabel.setFont(Util.makeSmallFont(cityLabel.getFont()));
-        rightLine.add(cityLabel);
-        rightLine.add(city);
+        rightTextPanel.add(cityLabel);
+        rightTextPanel.add(city);
 
         street = new JTextField(10);
         JLabel streetLabel = new JLabel("Street");
         streetLabel.setFont(Util.makeSmallFont(streetLabel.getFont()));
-        rightLine.add(streetLabel);
-        rightLine.add(street);
+        rightTextPanel.add(streetLabel);
+        rightTextPanel.add(street);
 
         zip = new JTextField(10);
         JLabel zipLabel = new JLabel("Zip");
         zipLabel.setFont(Util.makeSmallFont(zipLabel.getFont()));
-        rightLine.add(zipLabel);
-        rightLine.add(zip);
-
-        rightTextPanel.add(rightLine);
+        rightTextPanel.add(zipLabel);
+        rightTextPanel.add(zip);
     }
 
-
-
-
-    private void addBackButtonListener(JButton butn) {
-        butn.addActionListener(evt -> {
-            LibrarySystem.hideAllWindows();
-            LibrarySystem.INSTANCE.setVisible(true);
-        });
-    }
 
     private void addSubmitButtonListener(JButton butn) {
         butn.addActionListener(evt -> {

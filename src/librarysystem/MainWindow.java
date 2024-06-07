@@ -34,7 +34,7 @@ public class MainWindow extends JFrame {
         	menuItems.add("exit");
         } else if(accessRight.equals("superuser")){
         	menuItems.add("Add new book");
-        	menuItems.add("Add new member");
+        	menuItems.add("Add New Member");
         	menuItems.add("Add copy of a book");
         	menuItems.add("Check out book");
         	menuItems.add("Get user record");
@@ -46,7 +46,10 @@ public class MainWindow extends JFrame {
         
         var checkout = new LibraryCheckoutUI();
         cards.add(checkout, "Check out book");
-        
+
+        var newMember= new TestWindow();
+        cards.add(newMember, "Add New Member");
+
         var jp = new JPanel();
         var jl = new JLabel("new");
         jp.add(jl);
