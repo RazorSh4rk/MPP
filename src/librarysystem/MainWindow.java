@@ -47,6 +47,11 @@ public class MainWindow extends JFrame {
         var links = new JList<String>(m);     
         var cards = new JPanel(new CardLayout());
         
+        var welcome = new JPanel();
+        welcome.setSize(480, 640);
+        welcome.add(new JLabel("Welcome to the library management app, please select an item on the left"));
+        cards.add(welcome);
+        
         var checkout = new LibraryCheckoutUI();
         cards.add(checkout, "Check out book");
 
@@ -59,8 +64,18 @@ public class MainWindow extends JFrame {
         var allBooks = new AllBooks();
         cards.add(allBooks.getMainPanel(), "Get books");
         
+        var newBook = new AddNewBookUI();
+        cards.add(newBook, "Add new book");
+        
+        var duplicateBook = new DuplicateBookUI();
+        cards.add(duplicateBook, "Add copy of a book");
+        
         links.addListSelectionListener(evt -> {
         	var selected = links.getSelectedValue().toString();
+        	if(selected.equals("Exit")) {
+        		this.dispose();
+        	}
+        	links.setSelectionBackground(Color.LIGHT_GRAY);
         	var cl = (CardLayout) (cards.getLayout());
         	cl.show(cards, selected);
         });

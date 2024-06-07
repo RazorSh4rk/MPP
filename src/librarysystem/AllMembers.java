@@ -17,6 +17,7 @@ public class AllMembers extends JPanel {
     public JPanel getMainPanel() {
         return mainPanel;
     }
+    JLabel errorField = new JLabel("$");
     private JPanel mainPanel;
     private JPanel topPanel;
     private JPanel middlePanel;
@@ -42,7 +43,7 @@ public class AllMembers extends JPanel {
 
     public void defineTopPanel() {
         topPanel = new JPanel();
-        JLabel AllIDsLabel = new JLabel("All Member IDs");
+        JLabel AllIDsLabel = new JLabel("All Members");
         Util.adjustLabelFont(AllIDsLabel, Util.DARK_BLUE, true);
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         topPanel.add(AllIDsLabel);

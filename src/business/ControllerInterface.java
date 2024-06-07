@@ -12,4 +12,5 @@ public interface ControllerInterface {
 	public List<String> allBookIds();
 
     LibraryMember getMember(String memberId);
+	Book getBook(String isbn);
 }
