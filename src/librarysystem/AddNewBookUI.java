@@ -75,13 +75,11 @@ public class AddNewBookUI extends JPanel{
 			var author = authorF.getText();
 			var cLen = (int) cLenF.getValue();
 			var copies = (int) copyF.getValue();
-			
-			if(title == "" || author == "") {
-				errorField.setText("Don't leave fields empty");
-				return;
-			}
+
 			
 			try {
+				Validation.nonEmpty(title);
+				Validation.nonEmpty(author);
 				Validation.isIsbn(isbn);
 			} catch (ValidationException e) {
 				errorField.setText(e.getMessage());

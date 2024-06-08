@@ -1,9 +1,6 @@
 package librarysystem;
 
-import business.ControllerInterface;
-import business.LibraryMember;
-import business.LoginException;
-import business.SystemController;
+import business.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -237,15 +234,19 @@ public class TestWindow extends JPanel {
     private void addSubmitButtonListener(JButton butn) {
         butn.addActionListener(evt -> {
 
-            if (!(memberNo.getText().isEmpty() ||
-                    lastName.getText().isEmpty() ||
-                    firstName.getText().isEmpty() ||
-                    state.getText().isEmpty() ||
-                    street.getText().isEmpty() ||
-                    zip.getText().isEmpty() ||
-                    phoneNumber.getText().isEmpty() ||
-                    city.getText().isEmpty())) {
+            if (!(memberNo.getText().isEmpty())) {
                 try {
+                    Validation.nonEmpty(memberNo.getText());
+                    Validation.nonEmpty(lastName.getText());
+                    Validation.nonEmpty(firstName.getText());
+                    Validation.nonEmpty(state.getText());
+                    Validation.nonEmpty(street.getText());
+                    Validation.nonEmpty(city.getText());
+                    Validation.nonEmpty(zip.getText());
+                    Validation.isZip(zip.getText());
+                    Validation.nonEmpty(phoneNumber.getText());
+                    Validation.isTelephone(phoneNumber.getText());
+
                     SystemController sc = new SystemController();
                     sc.addMember(memberNo.getText(), firstName.getText(), lastName.getText(), phoneNumber.getText(), state.getText(), city.getText(), street.getText(), zip.getText());
                     JOptionPane.showMessageDialog(TestWindow.this, "Member id added");

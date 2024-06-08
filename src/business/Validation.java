@@ -22,7 +22,7 @@ public class Validation {
 
     public static void isTelephone(String tel) throws ValidationException {
         if (!tel.matches("\\d{3}-\\d{3}-\\d{4}")) {
-            throw new ValidationException("Tel Number must be numeric and consist of 5 characters!");
+            throw new ValidationException("Tel Number must match this format 123-123-1234");
         }
     }
 
