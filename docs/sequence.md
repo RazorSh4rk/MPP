@@ -1,4 +1,4 @@
-```Mermaid
+```mermaid
 sequenceDiagram
     participant AddNewMemberWDW as "AddNewMemberWDW"
     participant SystemController as "SystemController"
