@@ -28,11 +28,10 @@ public class AddNewBookUI extends JPanel{
 	JLabel errorField;
 	
 	public AddNewBookUI() {
-		setSize(480, 640);
 		setLayout(new GridLayout(7, 1, 10, 10));
 		
 		var p0 = new JPanel();
-		p0.setLayout(new GridLayout(1, 2, 50, 50));
+		p0.setLayout(new GridLayout(1, 2, 10, 10));
 		p0.add(new JLabel("ISBN"));
 		var isbnF = new JTextField();
 		p0.add(isbnF);
@@ -96,7 +95,7 @@ public class AddNewBookUI extends JPanel{
 			DataAccess da = new DataAccessFacade();
 			var nB = new Book(isbn, title, cLen, aList);
 			da.saveNewBook(nB);
-			errorField.setText("Book saved: " + nB.toString());
+			errorField.setText("Book saved: " + nB.getTitle());
 		});
 		p5.add(b);
 		add(p5);
@@ -109,7 +108,6 @@ public class AddNewBookUI extends JPanel{
 	
 	public static void main(String[] args) {
 		var f = new JFrame();
-		f.setSize(480, 640);
 		f.add(new AddNewBookUI());
 		f.setVisible(true);
 	}

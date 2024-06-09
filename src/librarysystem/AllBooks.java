@@ -8,15 +8,9 @@ import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.TextArea;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -36,14 +30,12 @@ public class AllBooks extends JPanel {
     private JPanel midPanel;
     private JPanel middlePanel;
     private JPanel bottomPanel;
-    private JTextArea detailField = new JTextArea();;
-    private TextArea textArea;
+    private JTextArea detailField = new JTextArea();
+
     public JPanel getMainPanel() {
         return mainPanel;
     }
 
-
-    //Singleton class
     public AllBooks() {
         mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -65,7 +57,7 @@ public class AllBooks extends JPanel {
         JLabel AllIDsLabel = new JLabel("All Books");
         Util.adjustLabelFont(AllIDsLabel, Util.DARK_BLUE, true);
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        topPanel.add(AllIDsLabel);;
+        topPanel.add(AllIDsLabel);
     }
 
     public void defineMiddlePanel() {
@@ -90,7 +82,7 @@ public class AllBooks extends JPanel {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) { // double-click
+                if (e.getClickCount() == 1) { // double-click
                     int row = table.getSelectedRow();
                     String isbn = (String) table.getValueAt(row, 0);
                     showMemberDetails(isbn);
@@ -141,14 +133,14 @@ public class AllBooks extends JPanel {
         Book book = ci.getBook(isbn);
 
         JPanel detailPanel = new JPanel();
-        detailPanel.setSize(460,300);
+        detailPanel.setSize(460, 300);
         detailPanel.setLayout(new BorderLayout());
 
         JTextArea detailArea = new JTextArea();
         detailArea.setEditable(false);
         detailArea.append("ISBN: " + book.getIsbn() + "\n");
         detailArea.append("Title: " + book.getTitle() + "\n");
-        for(Author author: book.getAuthors()) {
+        for (Author author : book.getAuthors()) {
             detailArea.append("Author: " + author.getFirstName() + " " + author.getLastName() + "\n");
         }
         detailArea.append("Max Checkout Duration: " + book.getMaxCheckoutLength() + "\n");

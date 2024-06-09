@@ -4,8 +4,6 @@ import business.SystemController;
 import dataaccess.Auth;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -20,13 +18,16 @@ public class MainWindow extends JFrame {
 	public MainWindow(String accessRight) {
 		super("Leabharlann - [" + accessRight + "]");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(640	, 640);
+        setSize(720	, 840);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setResizable(false);
         
         var menuItems = new ArrayList<String>();
-        if(SystemController.currentAuth == Auth.ADMIN) {
+        if(SystemController.currentAuth == null) {
+            showLogin();
+            return;
+        } else if(SystemController.currentAuth == Auth.ADMIN) {
         	menuItems.add("Add new book");
         	menuItems.add("Add new member");
         	menuItems.add("Add copy of a book");
@@ -74,6 +75,7 @@ public class MainWindow extends JFrame {
         	var selected = links.getSelectedValue().toString();
         	if(selected.equals("Exit")) {
         		this.dispose();
+                showLogin();
         	}
         	links.setSelectionBackground(Color.LIGHT_GRAY);
         	var cl = (CardLayout) (cards.getLayout());
@@ -92,4 +94,9 @@ public class MainWindow extends JFrame {
         Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
         login.setVisible(true);
 	}
+
+    private void showLogin() {
+        setVisible(false);
+        login.setVisible(true);
+    }
 }
