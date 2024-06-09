@@ -15,86 +15,98 @@ public class DuplicateBookUI extends JPanel {
 
     private static final long serialVersionUID = 7167511124084521494L;
 
-    DefaultTableModel dtm = new DefaultTableModel(new Object[] {"ISBN", "Title", "Copies"}, 0);
-    JLabel errorField;
+    JPanel mainPanel, topPanel, middlePanel, bottomPanel;
+    JButton checkAvailabilityButton, addCopyButton;
+    JTextField isbnField;
+    DefaultTableModel dtm = new DefaultTableModel(new Object[]{"ISBN", "Title", "Copies"}, 0);
+    JLabel errorField = new JLabel("$");
     Book selectedBook;
-    
-	public DuplicateBookUI() {
-        setSize(480, 640);
 
-        this.setLayout(new GridLayout(5, 1, 10, 10));
+    public DuplicateBookUI() {
+        mainPanel = new JPanel(new BorderLayout(5, 5));
 
-        // TextField: isbn
-        var jpI = new JPanel();
-        jpI.setLayout(new GridLayout(1, 3, 10, 10));
-        JTextField isbnField = new JTextField("isbn");
-        jpI.add(new JLabel());
-        jpI.add(isbnField);
-        jpI.add(new JLabel());
-        add(jpI);
+        defineTopPanel();
+        defineMiddlePanel();
+        defineBottomPanel();
 
-        // Button: check availability
-        var jp0 = new JPanel();
-        jp0.setLayout(new FlowLayout());
-        JButton checkAvailabilityButton = new JButton("check availability");
-        checkAvailabilityButton.addActionListener(evt -> {
-        	selectedBook = null;
-        	var isbn = isbnField.getText();
-        	try {
-				Validation.isIsbn(isbn);
-			} catch (ValidationException e) {
-				errorField.setText(e.getMessage());
-				return;
-			}
-        	
-        	DataAccess da = new DataAccessFacade();
-        	var bMap = da.readBooksMap();
-    		if(!bMap.containsKey(isbn)) {
-    			errorField.setText("Book not found!");
-    			return;
-    		}
-    		
-    		var b = bMap.get(isbn);
-    		selectedBook = b;
-    		dtm.addRow(new Object[] {b.getIsbn(), b.getTitle(), b.getCopies().length});
-        });
-        jp0.add(checkAvailabilityButton);
-        add(jp0);
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(middlePanel, BorderLayout.CENTER);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Table: details
+        add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private void defineTopPanel() {
+
+        topPanel = new JPanel(new GridLayout(1, 4, 10, 10));
+        isbnField = new JTextField("isbn");
+        defineCheckAvailabilityButton();
+        defineAddCopyButton();
+        topPanel.add(isbnField);
+        topPanel.add(checkAvailabilityButton);
+        topPanel.add(addCopyButton);
+
+    }
+
+    private void defineMiddlePanel() {
+
+        middlePanel = new JPanel();
         JTable detailsTable = new JTable(dtm);
         JScrollPane detailsScrollPane = new JScrollPane(detailsTable);
-        add(detailsScrollPane);
 
-        // Button: Copy
-        var jp1 = new JPanel();
-        jp1.setLayout(new FlowLayout());
-        JButton copyButton = new JButton("Copy");
-        copyButton.addActionListener(evt -> {
-        	if(selectedBook == null) {
-        		errorField.setText("No book selected");
-        		return;
-        	}
-        	
-        	DataAccess da = new DataAccessFacade();
-        	selectedBook.addCopy();
-        	da.saveNewBook(selectedBook);
-        	errorField.setText("Book copied");
-        	dtm.removeRow(0);
-        });
-        jp1.add(copyButton);
-        add(jp1);
-        
-        errorField = new JLabel("$");
-        add(errorField);
-
-        setVisible(true);
+        middlePanel.add(detailsScrollPane);
     }
-	
-	public static void main(String[] args) {
-		var f = new JFrame();
-		f.setSize(480, 640);
-		f.add(new DuplicateBookUI());
-		f.setVisible(true);
-	}
+
+    private void defineBottomPanel() {
+
+        bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(errorField, BorderLayout.CENTER);
+    }
+
+    private void defineCheckAvailabilityButton() {
+        checkAvailabilityButton = new JButton("check availability");
+        checkAvailabilityButton.addActionListener(evt -> {
+            selectedBook = null;
+            var isbn = isbnField.getText();
+            try {
+                Validation.isIsbn(isbn);
+            } catch (ValidationException e) {
+                errorField.setText(e.getMessage());
+                return;
+            }
+
+            DataAccess da = new DataAccessFacade();
+            var bMap = da.readBooksMap();
+            if (!bMap.containsKey(isbn)) {
+                errorField.setText("Book not found!");
+                return;
+            }
+
+            var b = bMap.get(isbn);
+            selectedBook = b;
+            dtm.addRow(new Object[]{b.getIsbn(), b.getTitle(), b.getCopies().length});
+        });
+    }
+
+    private void defineAddCopyButton() {
+        addCopyButton = new JButton("Copy");
+        addCopyButton.addActionListener(evt -> {
+            if (selectedBook == null) {
+                errorField.setText("No book selected");
+                return;
+            }
+
+            DataAccess da = new DataAccessFacade();
+            selectedBook.addCopy();
+            da.saveNewBook(selectedBook);
+            errorField.setText("Book copied");
+            dtm.removeRow(0);
+            dtm.addRow(new Object[]{selectedBook.getIsbn(), selectedBook.getTitle(), selectedBook.getCopies().length});
+        });
+    }
+
+    public static void main(String[] args) {
+        var f = new JFrame();
+        f.add(new DuplicateBookUI());
+    }
 }
