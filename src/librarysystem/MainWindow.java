@@ -56,7 +56,7 @@ public class MainWindow extends JFrame {
         var checkout = new LibraryCheckoutUI();
         cards.add(checkout, "Check out book");
 
-        var newMember= new TestWindow();
+        var newMember= new AddNewMember();
         cards.add(newMember, "Add new member");
 
         var allMembers = new AllMembers();

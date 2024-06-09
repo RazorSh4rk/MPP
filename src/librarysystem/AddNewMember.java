@@ -10,16 +10,14 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 
-public class TestWindow extends JPanel {
-    public static final TestWindow INSTANCE = new TestWindow();
+public class AddNewMember extends JPanel {
 
-    private boolean isInitialized = false;
+    public static final AddNewMember INSTANCE = new AddNewMember();
 
     private JPanel mainPanel;
     private JPanel upperHalf;
     private JPanel middleHalf;
     private JPanel lowerHalf;
-    private JPanel container;
 
     private JPanel topPanel;
     private JPanel middlePanel;
@@ -35,30 +33,13 @@ public class TestWindow extends JPanel {
     private JTextField city;
     private JTextField zip;
     private JTextField street;
-    private JLabel label;
-    private JButton submitButton;
 
+    private JButton submitButton;
 
     ControllerInterface ci = new SystemController();
 
-    public boolean isInitialized() {
-        return isInitialized;
-    }
-
-    public void isInitialized(boolean val) {
-        isInitialized = val;
-    }
-
-    private JTextField messageBar = new JTextField();
-
-    public void clear() {
-        messageBar.setText("");
-    }
-
-    /* This class is a singleton */
-    public TestWindow() {
+    public AddNewMember() {
         mainPanel = new JPanel();
-        mainPanel.setSize(480, 640);
         defineUpperHalf();
         defineMiddleHalf();
         defineLowerHalf();
@@ -70,9 +51,7 @@ public class TestWindow extends JPanel {
         mainPanel.add(middleHalf, BorderLayout.CENTER);
         mainPanel.add(lowerHalf, BorderLayout.SOUTH);
 
-        add(mainPanel); // Add the main panel to the TestWindow panel
-
-        setSize(800, 200); // fixed frame size
+        add(mainPanel); // Add the main panel to the AddNewMember panel
     }
 
     private void defineUpperHalf() {
@@ -89,6 +68,7 @@ public class TestWindow extends JPanel {
     }
 
     private void defineMiddleHalf() {
+
         middleHalf = new JPanel();
         middleHalf.setLayout(new BorderLayout());
         JSeparator s = new JSeparator();
@@ -98,6 +78,7 @@ public class TestWindow extends JPanel {
     }
 
     private void defineLowerHalf() {
+
         lowerHalf = new JPanel();
         lowerHalf.setLayout(new BorderLayout());
 
@@ -132,7 +113,9 @@ public class TestWindow extends JPanel {
         refreshButton.addActionListener(e -> updateTable(tableModel));
         updateTable(tableModel);
     }
+
     private void updateTable(DefaultTableModel tableModel) {
+
         tableModel.setRowCount(0);
         Collection<String> memberIds = ci.allMemberIds();
         for (String memberId : memberIds) {
@@ -142,6 +125,7 @@ public class TestWindow extends JPanel {
     }
 
     private void defineTopPanel() {
+
         topPanel = new JPanel();
         JPanel intPanel = new JPanel(new BorderLayout());
         intPanel.add(Box.createRigidArea(new Dimension(0, 20)), BorderLayout.NORTH);
@@ -154,6 +138,7 @@ public class TestWindow extends JPanel {
     }
 
     private void defineMiddlePanel() {
+
         middlePanel = new JPanel();
         middlePanel.setLayout(new GridLayout(1, 2));
 
@@ -173,6 +158,7 @@ public class TestWindow extends JPanel {
     }
 
     private void defineLeftTextPanel() {
+
         leftTextPanel = new JPanel();
         leftTextPanel.setLayout(new GridLayout(4, 2));
 
@@ -202,6 +188,7 @@ public class TestWindow extends JPanel {
     }
 
     private void defineRightTextPanel() {
+
         rightTextPanel = new JPanel();
         rightTextPanel.setLayout(new GridLayout(4, 2));
 
@@ -232,35 +219,33 @@ public class TestWindow extends JPanel {
 
 
     private void addSubmitButtonListener(JButton butn) {
+
         butn.addActionListener(evt -> {
+            try {
+                Validation.nonEmpty(memberNo.getText());
+                Validation.nonEmpty(lastName.getText());
+                Validation.nonEmpty(firstName.getText());
+                Validation.nonEmpty(state.getText());
+                Validation.nonEmpty(street.getText());
+                Validation.nonEmpty(city.getText());
+                Validation.nonEmpty(zip.getText());
+                Validation.isZip(zip.getText());
+                Validation.nonEmpty(phoneNumber.getText());
+                Validation.isTelephone(phoneNumber.getText());
 
-            if (!(memberNo.getText().isEmpty())) {
-                try {
-                    Validation.nonEmpty(memberNo.getText());
-                    Validation.nonEmpty(lastName.getText());
-                    Validation.nonEmpty(firstName.getText());
-                    Validation.nonEmpty(state.getText());
-                    Validation.nonEmpty(street.getText());
-                    Validation.nonEmpty(city.getText());
-                    Validation.nonEmpty(zip.getText());
-                    Validation.isZip(zip.getText());
-                    Validation.nonEmpty(phoneNumber.getText());
-                    Validation.isTelephone(phoneNumber.getText());
-
-                    SystemController sc = new SystemController();
-                    sc.addMember(memberNo.getText(), firstName.getText(), lastName.getText(), phoneNumber.getText(), state.getText(), city.getText(), street.getText(), zip.getText());
-                    JOptionPane.showMessageDialog(TestWindow.this, "Member id added");
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, e.getMessage());
-                }
-            } else JOptionPane.showMessageDialog(TestWindow.this, "Enter all credentials");
+                SystemController sc = new SystemController();
+                sc.addMember(memberNo.getText(), firstName.getText(), lastName.getText(), phoneNumber.getText(), state.getText(), city.getText(), street.getText(), zip.getText());
+                JOptionPane.showMessageDialog(AddNewMember.this, "Member id added");
+            } catch (ValidationException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            }
         });
     }
 
     private void showMemberDetails(String memberId) {
         LibraryMember member = ci.getMember(memberId);
         JPanel detailPanel = new JPanel();
-        detailPanel.setSize(300,250);
+        detailPanel.setSize(300, 250);
         detailPanel.setLayout(new BorderLayout());
         JTextArea detailArea = new JTextArea();
         detailArea.setEditable(false);
