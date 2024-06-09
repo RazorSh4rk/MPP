@@ -12,28 +12,51 @@ sequenceDiagram
     Participant MC as MainComponent
     Participant CC as CheckoutComponent
     Participant V as ValidatorComponent
-    Participant DB as Database
+    Participant B as Book
+    Participant M as Member
+    Participant DF as DataFacade
 
     activate A
     A->>MC: checkoutBook()
     activate MC
     MC->>CC: setVisible()
     activate CC
-    A->>CC: enterDetails()
+    A->>CC: enterDetails(isbn, memberId)
     A->>CC: createCheckout()
+    
     CC->>V: validate()
     activate V
     V-->CC: return
     deactivate V
-    CC->>DB: updateUserDetails()
-    activate DB
-    deactivate DB
-    CC->>DB: updateBookDetails()
-    activate DB
-    deactivate DB
+    
+    CC->>DF: getMembers()
+    activate DF
+    deactivate DF
+    
+    CC->>DF: getBooks()
+    activate DF
+    deactivate DF
+    
+    CC->>M: checkMember(memberId)
+    activate M
+    deactivate M
+    
+    CC->>B: checkBookAvailability(isbn)
+    activate B
+    deactivate B
+    
+    CC->>DF: updateBookDetails(book)
+    activate DF
+    deactivate DF
+    
+    CC->>DF: updateMemberDetails(checkOutRecord)
+    activate DF
+    deactivate DF
+    
     CC->>CC: showResult()
     activate CC
     deactivate CC
+    
     CC-->MC: 
     deactivate CC
     deactivate MC
