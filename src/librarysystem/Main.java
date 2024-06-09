@@ -6,11 +6,7 @@ import dataaccess.Auth;
 import java.awt.*;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 
 public class Main extends JFrame {
 	private static final LibWindow login = LoginWindow.INSTANCE;
@@ -18,7 +14,7 @@ public class Main extends JFrame {
 	public Main(String accessRight) {
 		super("Leabharlann - [" + accessRight + "]");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(720	, 840);
+        setSize(720	, 640);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setResizable(false);
@@ -47,11 +43,15 @@ public class Main extends JFrame {
         String[] m = menuItems.toArray(new String[0]);
         var links = new JList<String>(m);     
         var cards = new JPanel(new CardLayout());
-        
+
         var welcome = new JPanel();
         welcome.setSize(480, 640);
         welcome.add(new JLabel("Welcome to the library management app, please select an item on the left"));
         welcome.add(links);
+        String currDirectory = System.getProperty("user.dir");
+        ImageIcon image = new ImageIcon(currDirectory+"/src/librarysystem/library.jpg");
+        welcome.add(new JLabel(image));
+
         cards.add(welcome);
         
         var checkout = new LibraryCheckoutUI();
