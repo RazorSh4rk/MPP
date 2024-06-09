@@ -28,10 +28,6 @@ public class LibraryCheckoutUI extends JPanel {
 	DefaultTableModel dtm = new DefaultTableModel(new Object[] {"Member ID", "ISBN", "Checkout", "Due"}, 0);
 	
     public LibraryCheckoutUI() {
-        //super("Checkout");
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(480, 640);
-        //setLocationRelativeTo(null);
 
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

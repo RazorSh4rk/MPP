@@ -56,7 +56,8 @@ classDiagram
     }
 
     class MainWindow{
-       
+       -login: LibWindow
+      -accessRight: String
     }
 
     class User{
@@ -86,7 +87,7 @@ User "1" *-- "1..*" Role
 Book "1" *-- "1..*" BookCopy
 checkOutRecord *-- checkoutRecordEntry
 Author "1..*" -- "1" Book
-SystemController "1" -- "1" AddMemberWindow
+SystemController "1" -- "1" MainWindow
 LibraryMember <.. SystemController
  DataAccess<.. SystemController
  User <.. SystemController

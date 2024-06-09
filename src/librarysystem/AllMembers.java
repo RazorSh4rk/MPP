@@ -1,10 +1,12 @@
 package librarysystem;
 
+import business.CheckoutRecord;
 import business.ControllerInterface;
 import business.LibraryMember;
 import business.SystemController;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.*;
@@ -89,11 +91,17 @@ public class AllMembers extends JPanel {
                 LibraryMember member = ci.getMember(selectedMemberId);
                 if (member!= null) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("Member ID: ").append(member.getMemberId()).append("\n");
-                    sb.append("First Name: ").append(member.getFirstName()).append("\n");
-                    sb.append("Last Name: ").append(member.getLastName()).append("\n");
-                    sb.append("Phone Number: ").append(member.getTelephone()).append("\n");
-                    sb.append("Address: ").append(member.getAddress()).append("\n");
+                    // Add checkout info
+                    Collection<CheckoutRecord> checkoutRecords = member.getCheckouts();
+                    if (checkoutRecords != null && !checkoutRecords.isEmpty()) {
+                        sb.append("\nCheckout Records:\n");
+                        for (CheckoutRecord cRecord : checkoutRecords) {
+                            sb.append("ISBN: ").append(cRecord.getIsbn()).append("\n");
+                            sb.append("Checkout Date: ").append(cRecord.getCheckoutDateAsString()).append("\n");
+                            sb.append("Due Date: ").append(cRecord.getDueDateAsString()).append("\n");
+                            sb.append("\n"); // add a blank line between records
+                        }
+                    }
                     memberInfoTextArea.setText(sb.toString());
                 }
             }

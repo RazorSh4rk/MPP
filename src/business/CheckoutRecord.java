@@ -12,4 +12,16 @@ public class CheckoutRecord implements Serializable{
 		b.changeAvailability();
 		cDate = c; dDate = d; this.b = b;
 	}
+
+	public String getIsbn() {
+		return b.getBook().getIsbn();
+	}
+
+	public String getCheckoutDateAsString() {
+		return cDate.toString();
+	}
+
+	public String getDueDateAsString() {
+		return dDate.toString();
+	}
 }
